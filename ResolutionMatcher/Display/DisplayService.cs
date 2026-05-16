@@ -40,39 +40,39 @@ struct DEVMODE
 public record ResolutionInfo(int Width, int Height);
 public interface IDisplayService
 {
-  ResolutionInfo GetCurrentResolution();
-  bool SetResolution(int Width, int Height);
+    ResolutionInfo GetCurrentResolution();
+    bool SetResolution(int Width, int Height);
 
 }
 
 
 public class DisplayService : IDisplayService
 {
-  private const int DM_PELSWIDTH = 0x80000;
-  private const int DM_PELSHEIGHT = 0x100000;
-  //PInvoke declarations for changing display settings
-  [DllImport("user32.dll")]
-  private static extern int ChangeDisplaySettings(ref DEVMODE devMode, int flags);
+    private const int DM_PELSWIDTH = 0x80000;
+    private const int DM_PELSHEIGHT = 0x100000;
+    //PInvoke declarations for changing display settings
+    [DllImport("user32.dll")]
+    private static extern int ChangeDisplaySettings(ref DEVMODE devMode, int flags);
 
-  public ResolutionInfo GetCurrentResolution()
-  {
-    var screen = Screen.PrimaryScreen ?? throw new InvalidOperationException("Primary screen not found");
-    return new ResolutionInfo(screen.Bounds.Width, screen.Bounds.Height);
-  }
-  public bool SetResolution(int Width, int Height)
-  {
-    DEVMODE dm = new();
+    public ResolutionInfo GetCurrentResolution()
     {
-      dm.dmSize = (short)Marshal.SizeOf<DEVMODE>();
-      dm.dmPelsWidth = Width;
-      dm.dmPelsHeight = Height;
-      dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+        var screen = Screen.PrimaryScreen ?? throw new InvalidOperationException("Primary screen not found");
+        return new ResolutionInfo(screen.Bounds.Width, screen.Bounds.Height);
     }
-    int result = ChangeDisplaySettings(ref dm, 0);
-    Console.WriteLine($"ChangeDisplaySettings result: {result}");
-    return result == 0; // DISP_CHANGE_SUCCESSFUL
-  }
+    public bool SetResolution(int Width, int Height)
+    {
+        DEVMODE dm = new();
+        {
+            dm.dmSize = (short)Marshal.SizeOf<DEVMODE>();
+            dm.dmPelsWidth = Width;
+            dm.dmPelsHeight = Height;
+            dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+        }
+        int result = ChangeDisplaySettings(ref dm, 0);
+        Console.WriteLine($"ChangeDisplaySettings result: {result}");
+        return result == 0; // DISP_CHANGE_SUCCESSFUL
+    }
 
-  
+
 
 }
