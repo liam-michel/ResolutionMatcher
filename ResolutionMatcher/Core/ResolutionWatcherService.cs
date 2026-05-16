@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using ResolutionMatcher.Display;
 using System.Diagnostics;
+using System.IO;
 namespace ResolutionMatcher.Core;
 
 
@@ -43,6 +44,13 @@ public class ResolutionWatcherService : IHostedService
     {
         _processWatcher.ProcessStarted += OnProcessStarted;
         _processWatcher.StartWatching(_settings.GameProcessName);
+
+        //check if the process is already running
+        var existingProcess = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_settings.GameProcessName));
+        if (existingProcess.Length > 0)
+        {
+            OnProcessStarted(this, existingProcess[0]);
+        }
         return Task.CompletedTask;
     }
 
