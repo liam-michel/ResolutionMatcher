@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ResolutionMatcher.Tests/ResolutionMatcher.Tests.csproj" />
+  <Project Path="ResolutionMatcher/ResolutionMatcher.csproj" />
+</Solution>
